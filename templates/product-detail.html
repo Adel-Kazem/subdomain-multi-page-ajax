@@ -1,0 +1,146 @@
+<!-- Product Detail Template -->
+<template id="product-detail-template">
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div x-data="{ product: null, selectedOption: null, quantity: 1, currentImageIndex: 0 }" x-init="
+          const productId = parseInt($router.getParams().id);
+          product = window.PrimeBeefStore.getProductById(productId);
+          if (product && product.options && product.options.length > 0) {
+            selectedOption = product.options[0];
+          }
+        ">
+                <template x-if="product">
+                    <div>
+                        <!-- Breadcrumb -->
+                        <nav class="mb-8">
+                            <ol class="flex flex-wrap text-sm">
+                                <li class="mr-2">
+                                    <a href="/" data-spa-link class="text-red-800 hover:text-red-900">Home</a>
+                                    <span class="mx-1">/</span>
+                                </li>
+                                <li class="mr-2">
+                                    <a href="/products" data-spa-link class="text-red-800 hover:text-red-900">Products</a>
+                                    <span class="mx-1">/</span>
+                                </li>
+                                <li>
+                                    <span class="text-gray-600" x-text="product.name"></span>
+                                </li>
+                            </ol>
+                        </nav>
+
+                        <div class="flex flex-col lg:flex-row gap-12">
+                            <!-- Images Section -->
+                            <div class="lg:w-1/2">
+                                <!-- Main Image -->
+                                <div class="mb-4 bg-white rounded-lg overflow-hidden shadow-md">
+                                    <img :src="Array.isArray(product.images) ? product.images[currentImageIndex] : product.images" :alt="product.name" class="w-full h-96 object-contain">
+                                </div>
+
+                                <!-- Thumbnails -->
+                                <div class="flex gap-2 overflow-x-auto pb-2" x-show="Array.isArray(product.images) && product.images.length > 1">
+                                    <template x-for="(image, index) in product.images" :key="index">
+                                        <button @click="currentImageIndex = index" class="w-20 h-20 rounded-md overflow-hidden border-2" :class="currentImageIndex === index ? 'border-red-500' : 'border-transparent'">
+                                            <img :src="image" :alt="`${product.name} thumbnail ${index + 1}`" class="w-full h-full object-cover">
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Product Details -->
+                            <div class="lg:w-1/2">
+                                <h1 class="text-3xl font-bold text-gray-900 mb-2" x-text="product.name"></h1>
+
+                                <!-- Rating & Stock -->
+                                <div class="flex items-center mb-4">
+                                    <div class="flex text-yellow-400">
+                                        <template x-for="i in 5" :key="i">
+                                            <svg class="w-5 h-5" fill="currentColor" :fill-opacity="i <= Math.floor(product.rating) ? 1 : 0.3">
+                                                <use href="#star-icon"></use>
+                                            </svg>
+                                        </template>
+                                    </div>
+                                    <span class="ml-2 text-gray-600" x-text="`${product.rating} (${product.stock} in stock)`"></span>
+                                </div>
+
+                                <!-- Price -->
+                                <div class="text-3xl font-bold text-red-800 mb-6" x-text="'$' + product.price.toFixed(2)"></div>
+
+                                <!-- Description -->
+                                <div class="mb-8">
+                                    <h2 class="text-xl font-bold text-gray-900 mb-2">Description</h2>
+                                    <p class="text-gray-700" x-text="product.description"></p>
+                                </div>
+
+                                <!-- Options Selection -->
+                                <div x-show="product.options && product.options.length > 0" class="mb-8">
+                                    <h2 class="text-xl font-bold text-gray-900 mb-2">Options</h2>
+                                    <div class="flex flex-wrap gap-2">
+                                        <template x-for="option in product.options" :key="option">
+                                            <button @click="selectedOption = option" class="px-4 py-2 border rounded-md transition-colors" :class="selectedOption === option ? 'bg-red-100 border-red-500 text-red-800' : 'border-gray-300 hover:border-red-300'" x-text="option"></button>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <!-- Features -->
+                                <div x-show="product.features && product.features.length > 0" class="mb-8">
+                                    <h2 class="text-xl font-bold text-gray-900 mb-2">Features</h2>
+                                    <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                        <template x-for="feature in product.features" :key="feature">
+                                            <li x-text="feature"></li>
+                                        </template>
+                                    </ul>
+                                </div>
+
+                                <!-- Quantity Selector -->
+                                <div class="mb-8">
+                                    <h2 class="text-xl font-bold text-gray-900 mb-2">Quantity</h2>
+                                    <div class="flex items-center">
+                                        <button @click="quantity > 1 ? quantity-- : null" class="w-10 h-10 border border-gray-300 rounded-l-md flex items-center justify-center text-gray-600 hover:bg-gray-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                                            </svg>
+                                        </button>
+                                        <input type="number" x-model="quantity" min="1" max="99" class="w-16 h-10 border-t border-b border-gray-300 text-center" />
+                                        <button @click="quantity < 99 ? quantity++ : null" class="w-10 h-10 border border-gray-300 rounded-r-md flex items-center justify-center text-gray-600 hover:bg-gray-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="flex flex-col sm:flex-row gap-4">
+                                    <button
+                                            @click="addToCart(product, quantity, selectedOption ? { option: selectedOption } : {})"
+                                            class="bg-red-800 hover:bg-red-900 text-white px-8 py-3 rounded-lg flex items-center justify-center transition-colors"
+                                    >
+                                        <svg class="w-5 h-5 mr-2">
+                                            <use href="#cart-icon"></use>
+                                        </svg>
+                                        Add to Cart
+                                    </button>
+                                    <button
+                                            @click="addToCart(product, quantity, selectedOption ? { option: selectedOption } : {}); navigateTo('/checkout')"
+                                            class="bg-gray-800 hover:bg-gray-900 text-white px-8 py-3 rounded-lg transition-colors"
+                                    >
+                                        Buy Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="!product">
+                    <div class="text-center py-20">
+                        <h1 class="text-2xl font-bold text-gray-800 mb-4">Product Not Found</h1>
+                        <p class="text-gray-600 mb-8">The product you're looking for doesn't exist or has been removed.</p>
+                        <a href="/products" data-spa-link class="inline-block bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-6 rounded-lg transition-colors">View All Products</a>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </section>
+</template>
+

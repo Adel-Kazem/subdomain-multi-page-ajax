@@ -1,0 +1,121 @@
+<!-- Home Page Template -->
+<template id="home-template">
+    <!-- Hero Section -->
+    <section id="hero" class="relative bg-gradient-to-r from-red-900 to-red-700 text-white">
+        <div class="absolute inset-0 overflow-hidden">
+            <img id="hero-background" src="https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Premium beef cuts" class="w-full h-full object-cover opacity-30">
+        </div>
+        <div class="container mx-auto px-4 py-20 md:py-32 relative z-10">
+            <div class="max-w-3xl">
+                <h1 id="hero-heading" class="text-4xl md:text-6xl font-bold mb-4">Premium Beef Butchery in Lebanon</h1>
+                <p id="hero-subheading" class="text-xl md:text-2xl mb-8">Experience the finest cuts of beef, expertly prepared by master butchers</p>
+                <div id="hero-cta-container" class="flex flex-col sm:flex-row gap-4">
+                    <a id="hero-primary-cta" href="/products" data-spa-link class="bg-yellow-500 hover:bg-yellow-600 text-red-900 font-bold py-3 px-6 rounded-lg transition-colors text-center">Explore Our Cuts</a>
+                    <a id="hero-secondary-cta" href="/contact" data-spa-link class="bg-transparent hover:bg-white/10 border-2 border-white text-white font-bold py-3 px-6 rounded-lg transition-colors text-center">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-2 text-center text-red-900">Featured Products</h2>
+            <p class="text-gray-600 text-center mb-12 max-w-3xl mx-auto">Discover our selection of premium featured beef cuts</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8" x-data="{featured: []}">
+                <template x-for="product in getFeaturedProducts().slice(0, 3)" :key="product.id">
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer" @click="openProductModal(product)">
+                        <img :src="Array.isArray(product.images) ? product.images[0] : product.images" :alt="product.name" class="w-full h-64 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-gray-900" x-text="product.name"></h3>
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 text-yellow-400">
+                                        <use href="#star-icon"></use>
+                                    </svg>
+                                    <span class="ml-1 text-gray-600" x-text="product.rating"></span>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 mb-4 line-clamp-3" x-text="product.description"></p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xl font-bold text-red-900" x-text="'$' + product.price.toFixed(2)"></span>
+                                <button @click.stop="addToCart(product)" class="bg-red-800 hover:bg-red-900 text-white px-4 py-2 rounded-lg flex items-center transition-colors">
+                                    <svg class="w-5 h-5 mr-2">
+                                        <use href="#cart-icon"></use>
+                                    </svg>
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="/products" data-spa-link class="inline-block bg-red-800 hover:bg-red-900 text-white font-bold py-3 px-8 rounded-lg transition-colors">View All Products</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section (Shortened) -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2">
+                    <h2 class="text-3xl font-bold mb-6 text-red-900">About Prime Beef</h2>
+                    <p class="mb-4 text-gray-700">At Prime Beef, we are dedicated to providing the highest quality beef cuts in Lebanon. Located in Nabatieh, Shokein, our specialty butchery focuses exclusively on premium beef, ensuring that each cut meets our exacting standards.</p>
+                    <p class="mb-6 text-gray-700">Our master butchers have decades of combined experience, using traditional techniques alongside modern practices to deliver exceptional beef products.</p>
+                    <a href="/about" data-spa-link class="inline-block bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-6 rounded-lg transition-colors">Learn More About Us</a>
+                </div>
+                <div class="md:w-1/2">
+                    <img src="images/Belts-Style-Image-4.jpg" alt="Our butchery" class="w-full h-auto rounded-lg shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section (Shortened) -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-2 text-center text-red-900">Our Butchery Services</h2>
+            <p class="text-gray-600 text-center mb-12 max-w-3xl mx-auto">We offer a range of specialized services to ensure you get exactly what you need.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-50 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+                    <div class="bg-red-100 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-700" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-900">Custom Cuts</h3>
+                    <p class="text-gray-600">Get your beef cut exactly how you want it. Our butchers can prepare any thickness or style to match your recipe requirements.</p>
+                </div>
+
+                <div class="bg-gray-50 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+                    <div class="bg-red-100 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-700" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-900">Home Delivery</h3>
+                    <p class="text-gray-600">We deliver fresh cuts directly to your doorstep. Order by phone or online and receive your premium beef within hours.</p>
+                </div>
+
+                <div class="bg-gray-50 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+                    <div class="bg-red-100 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-700" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-900">Aging Services</h3>
+                    <p class="text-gray-600">Experience the enhanced flavor of properly aged beef. We offer both wet and dry aging services for superior taste and tenderness.</p>
+                </div>
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="/services" data-spa-link class="inline-block bg-red-800 hover:bg-red-900 text-white font-bold py-3 px-8 rounded-lg transition-colors">View All Services</a>
+            </div>
+        </div>
+    </section>
+</template>

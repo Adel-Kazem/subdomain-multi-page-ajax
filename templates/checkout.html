@@ -1,0 +1,177 @@
+<!-- Checkout Template -->
+<template id="checkout-template">
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl font-bold mb-2 text-center text-red-900">Checkout</h1>
+            <p class="text-gray-600 text-center mb-12 max-w-3xl mx-auto">Complete your order by providing your details below.</p>
+
+            <div x-data="{
+          get cartItems() { return window.PrimeBeefStore.getCart(); },
+          get cartTotals() { return window.PrimeBeefStore.getCartTotals(); },
+
+          // Form fields
+          shippingInfo: {
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: '',
+            address: '',
+            city: '',
+            zip: ''
+          },
+          deliveryOption: 'standard',
+          paymentMethod: 'cash',
+
+          // WhatsApp checkout
+          checkoutViaWhatsApp() {
+            const message = window.PrimeBeefStore.generateWhatsAppOrderMessage();
+            window.open('https://wa.me/96170608543?text=' + message, '_blank');
+            window.PrimeBeefStore.clearCart();
+            navigateTo('/');
+          }
+        }">
+                <div x-show="cartItems.length === 0" class="text-center py-12">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Cart is Empty</h2>
+                    <p class="text-gray-600 mb-8">You need to add products to your cart before checking out.</p>
+                    <a href="/products" data-spa-link class="inline-block bg-red-800 hover:bg-red-900 text-white font-bold py-3 px-8 rounded-lg transition-colors">Browse Products</a>
+                </div>
+
+                <div x-show="cartItems.length > 0" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Checkout Form -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                            <h2 class="text-xl font-bold mb-4 pb-2 border-b">Shipping Information</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-2">First Name</label>
+                                    <input type="text" x-model="shippingInfo.firstName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-2">Last Name</label>
+                                    <input type="text" x-model="shippingInfo.lastName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-2">Email</label>
+                                    <input type="email" x-model="shippingInfo.email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-2">Phone</label>
+                                    <input type="tel" x-model="shippingInfo.phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block text-gray-700 font-medium mb-2">Address</label>
+                                <input type="text" x-model="shippingInfo.address" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-2">City</label>
+                                    <input type="text" x-model="shippingInfo.city" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-2">Postal Code</label>
+                                    <input type="text" x-model="shippingInfo.zip" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                            <h2 class="text-xl font-bold mb-4 pb-2 border-b">Delivery Options</h2>
+                            <div class="space-y-4">
+                                <label class="flex items-center">
+                                    <input type="radio" x-model="deliveryOption" value="standard" class="h-5 w-5 text-red-600">
+                                    <span class="ml-2">Standard Delivery (1-3 days)</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" x-model="deliveryOption" value="express" class="h-5 w-5 text-red-600">
+                                    <span class="ml-2">Express Delivery (Same day)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <h2 class="text-xl font-bold mb-4 pb-2 border-b">Payment Method</h2>
+                            <div class="space-y-4">
+                                <label class="flex items-center">
+                                    <input type="radio" x-model="paymentMethod" value="cash" class="h-5 w-5 text-red-600">
+                                    <span class="ml-2">Cash on Delivery</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" x-model="paymentMethod" value="card" class="h-5 w-5 text-red-600">
+                                    <span class="ml-2">Credit/Debit Card</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white rounded-lg shadow-md p-6 sticky top-24">
+                            <h2 class="text-xl font-bold mb-4 pb-2 border-b">Order Summary</h2>
+
+                            <div class="max-h-64 overflow-y-auto mb-4">
+                                <template x-for="(item, index) in cartItems" :key="index">
+                                    <div class="flex items-center justify-between py-2 border-b">
+                                        <div class="flex items-center">
+                                            <span class="font-medium text-gray-900 mr-2" x-text="item.quantity + 'x'"></span>
+                                            <div>
+                                                <h4 class="font-medium text-gray-900" x-text="item.name"></h4>
+                                                <p class="text-sm text-gray-500" x-show="Object.keys(item.options).length > 0">
+                                                    <template x-for="(value, key) in item.options" :key="key">
+                                                        <span x-text="key + ': ' + value"></span>
+                                                    </template>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <span class="text-gray-700" x-text="'$' + (item.price * item.quantity).toFixed(2)"></span>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="space-y-2 mb-6">
+                                <div class="flex justify-between">
+                                    <span>Subtotal:</span>
+                                    <span x-text="'$' + cartTotals.subtotal"></span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Tax (11%):</span>
+                                    <span x-text="'$' + cartTotals.tax"></span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Shipping:</span>
+                                    <span x-text="cartTotals.shipping === '0.00' ? 'Free' : '$' + cartTotals.shipping"></span>
+                                </div>
+                                <div class="flex justify-between font-bold text-lg pt-2 border-t">
+                                    <span>Total:</span>
+                                    <span x-text="'$' + cartTotals.total"></span>
+                                </div>
+                            </div>
+
+                            <button
+                                    @click="checkoutViaWhatsApp()"
+                                    class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg text-center transition-colors flex items-center justify-center mb-3"
+                            >
+                                <svg class="w-5 h-5 mr-2">
+                                    <use href="#whatsapp-icon"></use>
+                                </svg>
+                                Order via WhatsApp
+                            </button>
+
+                            <button class="w-full bg-red-800 hover:bg-red-900 text-white font-bold py-3 px-4 rounded-lg text-center transition-colors">
+                                Place Order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</template>
