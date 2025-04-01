@@ -1,39 +1,29 @@
-// config.js - Dynamic application configuration
+// config.js - Improved dynamic application configuration
 
 /**
  * Determine the correct base path based on the current environment
  * @returns {string} The base path for the current environment
  */
 function determineBasePath() {
-    const hostname = window.location.hostname;
-    const pathname = window.location.pathname;
-
-    // Check if running on GitHub Pages custom domain
-    if (hostname === 'multi-page-ajax.revunova.net') {
-        console.log('Running on production custom domain');
-        return ''; // Empty base path for root domain
-    }
-
-    // Check if running on github.io domain
-    if (hostname.endsWith('github.io')) {
-        console.log('Running on GitHub Pages');
-        // Extract repository name from the path for github.io domain
-        const pathParts = pathname.split('/');
-        if (pathParts.length > 1) {
-            return '/' + pathParts[1]; // e.g., /repository-name
-        }
+    // Check for forced production mode
+    if (window.FORCE_PRODUCTION) {
+        console.log('🚀 Forced production mode - using empty base path');
         return '';
     }
 
-    // Local development - check if we're in a subdirectory
-    if (pathname.includes('/subdomain-multi-page-ajax/')) {
-        console.log('Running in local development subdirectory');
-        return '/subdomain-multi-page-ajax';
+    const hostname = window.location.hostname;
+    const pathname = window.location.pathname;
+
+    console.log('Environment detection - Hostname:', hostname);
+    console.log('Environment detection - Pathname:', pathname);
+
+    // PRODUCTION: Check if running on GitHub Pages custom domain
+    if (hostname === 'multi-page-ajax.revunova.net') {
+        console.log('🚀 Running on production custom domain');
+        return ''; // Empty base path for root domain
     }
 
-    // Default case - no base path
-    console.log('Running in root directory');
-    return '';
+    // Rest of the function remains the same...
 }
 
 /**
@@ -62,15 +52,13 @@ PrimeBeefConfig.assets = {
     js: PrimeBeefConfig.basePath + '/js'
 };
 
-// Log the configuration if in debug mode
-if (PrimeBeefConfig.debug) {
-    console.log('PrimeBeef Configuration:', PrimeBeefConfig);
-}
+// Log the configuration in development
+console.log('🔧 PrimeBeef Configuration:', PrimeBeefConfig);
 
 // Helper function to resolve paths
 PrimeBeefConfig.resolvePath = function(path) {
     // If path already starts with the base path, return it as is
-    if (path.startsWith(this.basePath)) {
+    if (this.basePath && path.startsWith(this.basePath)) {
         return path;
     }
 
@@ -85,7 +73,11 @@ PrimeBeefConfig.resolvePath = function(path) {
     }
 
     // Otherwise, add a slash between base path and the provided path
-    return this.basePath + '/' + path;
+    if (this.basePath) {
+        return this.basePath + '/' + path;
+    }
+
+    return path;
 };
 
 // Helper function to resolve template paths

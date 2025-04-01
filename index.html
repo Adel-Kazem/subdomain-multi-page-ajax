@@ -7,6 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
+    <script>
+        // Force production mode for specific domain
+        window.FORCE_PRODUCTION = window.location.hostname === 'multi-page-ajax.revunova.net';
+        console.log('Production mode override:', window.FORCE_PRODUCTION);
+    </script>
+
     <!-- Load our configuration first -->
     <script src="js/config.js"></script>
 
